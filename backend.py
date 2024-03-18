@@ -34,14 +34,14 @@ class Compound_intr:
     def get_coump_int(self):
         return self.pvalue*(1+(self.interest/100)/(self.friq))**self.time
 
-person_1 = Compound_intr(1,1,1,1)
+rate = Compound_intr(1,1,1,1)
 
-person_1.set_pvalue(1000)
-person_1.set_interest(30)
-person_1.set_friq(1)
-person_1.set_time(3)
+rate.set_pvalue(1000)
+rate.set_interest(30)
+rate.set_friq(1)
+rate.set_time(3)
 
-print(person_1.get_coump_int())
+print(f"Future value is: {rate.get_coump_int()}$")
 
 class WACC:
     def __init__(self, i_expense, tl_debt, i_tax_expense, i_before_tax, cap, beta, rfr = 0.0345, market_rtrn = 0.09, ):
@@ -79,7 +79,7 @@ class WACC:
         return self.i_tax_expense/self.i_before_tax
 
     def get_cost_of_debt_aftTax(self):
-        return self.cost_of_debt()*(1 - self.effective_t_rate()) * 100
+        return self.cost_of_debt()*(1 - self.effective_t_rate())
 
     def get_cost_of_equity(self):
         return (self.beta + self.rfr) * (self.market_rtrn - self.rfr)
@@ -91,7 +91,7 @@ class WACC:
         return self.cap / (self.tl_debt + self.cap)
 
     def get_wacc(self):
-        return (self.get_cost_of_debt_aftTax() * self.debt_to_total())+ (self.get_cost_of_equity() * self.cap_to_total()) * 100
+        return (self.get_cost_of_debt_aftTax() * self.debt_to_total())+ (self.get_cost_of_equity() * self.cap_to_total())
 
 Debt = WACC(1,1,1,1,1,1)
 
@@ -102,18 +102,28 @@ Debt.set_i_tax_expense(121000)
 Debt.set_i_expense(29000)
 Debt.set_cap(2387000)
 
-print(Debt.get_wacc())
+print(f"WACC is: {Debt.get_wacc()*100}%")
 
-class Discount(Compound_intr, WACC):
-    def __init__(self):
-        pass
+class Discount:
+    def rate_of_d(self):
+        return (1 + Debt.get_wacc())**rate.time
 
-    def get(self):
-        return self.get_wacc()
+    def discounting(self):
+        return rate.get_coump_int() / self.rate_of_d()
 
 disc = Discount()
 
-print(disc.get())
+print(f"Discounted cash flow is: {disc.discounting()}$ over: {rate.time} years")
+
+
+
+
+          
+
+
+
+
+
 
 
 
