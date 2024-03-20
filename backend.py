@@ -7,36 +7,35 @@ class Compound_intr:
         self.friq = friq
         self.time = time
 
-    def set_pvalue(self,pv):
+    def set_pvalue(self,pv):#present value
         if type(pv) in (int, float):
             self.pvalue = pv
         else:
             raise ValueError("It has to be a number")
 
-    def set_interest(self,i):
+    def set_interest(self,i):#growt rate
         if type(i) in (int, float):
             self.interest = i
         else:
             raise ValueError("It has to be a number")
 
-    def set_friq(self,f):
+    def set_friq(self,f):#friquentcy
         if type(f) in (int, float):
             self.friq = f
         else:
             raise ValueError("It has to be an integer")
 
-    def set_time(self,t):
+    def set_time(self,t):#time(period)
         if type(t) in (int, float):
             self.time = t
         else:
             raise ValueError("It has to be a number")
 
-    def get_coump_int(self):
+    def get_coump_int(self): # finds compound interest
         return self.pvalue*(1+(self.interest/100)/(self.friq))**self.time
 
 
-
-class WACC:
+class WACC:# waighted average cost fo capital
     def __init__(self, i_expense, tl_debt, i_tax_expense, i_before_tax, cap, beta, rfr = 0.0345, market_rtrn = 0.09, ):
         self.i_expense = i_expense
         self.tl_debt = tl_debt
@@ -50,28 +49,28 @@ class WACC:
     def set_beta(self,b):
         self.beta = b
 
-    def set_tl_debt(self, debt):
+    def set_tl_debt(self, debt):# total debt
         self.tl_debt = debt
 
-    def set_i_tax_expense(self, tax):
+    def set_i_tax_expense(self, tax):#income tax expense
         self.i_tax_expense = tax
 
-    def set_i_before_tax(self, bef_tax):
+    def set_i_before_tax(self, bef_tax):#income before tax
         self.i_before_tax = bef_tax
 
-    def set_i_expense(self,i):
+    def set_i_expense(self,i):#interest expense
         self.i_expense = i
 
-    def set_cap(self,c):
+    def set_cap(self,c):#capitalisation
         self.cap = c
 
-    def cost_of_debt(self):
+    def cost_of_debt(self):#find cost of debt
         return self.i_expense/self.tl_debt
 
     def effective_t_rate(self):
         return self.i_tax_expense/self.i_before_tax
 
-    def get_cost_of_debt_aftTax(self):
+    def get_cost_of_debt_aftTax(self):#cost of debt after tax
         return self.cost_of_debt()*(1 - self.effective_t_rate())
 
     def get_cost_of_equity(self):
@@ -83,14 +82,16 @@ class WACC:
     def cap_to_total(self):
         return self.cap / (self.tl_debt + self.cap)
 
-    def get_wacc(self):
+    def get_wacc(self): # returns waighted average cost of capital
         return (self.get_cost_of_debt_aftTax() * self.debt_to_total())+ (self.get_cost_of_equity() * self.cap_to_total())
 
+
 class Discount(WACC, Compound_intr):
-    def rate_of_d(self):
+#discounting future value (compound interest) by wacc
+    def rate_of_d(self):#discount rate (1+wacc)^period
         return (1 + self.get_wacc())**self.time
 
-    def discounting(self):
+    def discounting(self):#FV/discount rate
         return self.get_coump_int() / self.rate_of_d()
 
 disc = Discount(1,1,1,1,1,1)
